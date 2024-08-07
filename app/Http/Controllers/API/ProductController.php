@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\API\BaseController;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ProductResource;
 use Illuminate\Http\JsonResponse;
 
