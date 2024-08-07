@@ -22,8 +22,19 @@ class ProfileController extends BaseController
 
         $user = User::find($id);
         if ($user){
+
+            if ($request-> hasFile('profile_photo_path')) {
+                $profilephoto = $request->file('profile_photo_path');
+                $profilephotoName = $user->id . time() . '_profile.' . $profilephoto->getClientOriginalExtension();
+                $profilephoto->move(public_path('storage/users_profile_photo/'), $profilephotoName);
+                $user->profile_photo_path = $profilephotoName;
+            } else {
+                $user-> profile_photo_path = $user->getOriginal('profile_photo_path');
+            }
+
             $user->update($validator->validated());
             $success['name'] = $user->name;
+            $success['profile_photo_path'] = $user->profile_photo_path;
             return $this->sendResponse($success, 'Profile updated successfully.');
         } else {
             return $this->sendError('Profile Updation Error.', $validator->errors());

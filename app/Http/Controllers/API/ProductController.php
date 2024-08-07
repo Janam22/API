@@ -70,7 +70,7 @@ class ProductController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $input = $request->all();
    
@@ -83,11 +83,16 @@ class ProductController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());       
         }
    
+        $product = Product::find($id);
+        if ($product) {
+
         $product->name = $input['name'];
         $product->detail = $input['detail'];
-        $product->save();
-   
+        $product->update();
+
         return $this->sendResponse(new ProductResource($product), 'Product updated successfully.');
+        }
+
     }
    
     /**
@@ -96,8 +101,17 @@ class ProductController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product): JsonResponse
+    public function destroy($id): JsonResponse
     {
+
+        $product = Product::find($id);
+
+        // Check if the product exists
+        if (!$product) {
+            return $this->sendError('Product not found.', [], 404);
+        }
+    
+        // Delete the product
         $product->delete();
    
         return $this->sendResponse([], 'Product deleted successfully.');
