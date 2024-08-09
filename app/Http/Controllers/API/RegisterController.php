@@ -35,9 +35,13 @@ class RegisterController extends BaseController
 
     public function login(Request $request): JsonResponse {
         
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
+        $credentials = $request->only('email', 'password');
+        if(Auth::attempt($credentials)){ 
+        //if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 
             $success['name'] =  $user->name;
+            $success['email'] =  $user->email;
+            $success['id'] =  $user->id;
    
             return $this->sendResponse($success, 'User login successfully.');
         } 
